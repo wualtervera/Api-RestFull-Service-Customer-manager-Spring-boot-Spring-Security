@@ -1,0 +1,43 @@
+[{
+  "_id": {
+    "$oid": "62f877422c98b41c2cf5cc1f"
+  },
+  "name": "Ricardo",
+  "surname": "Gonzales",
+  "direction": "Calle 1 , Covicorti, Piura",
+  "createdAt": {
+    "$date": "2022-08-14T04:17:06.864Z"
+  },
+  "updatedAt": {
+    "$date": "2022-08-14T04:28:40.550Z"
+  },
+  "_class": "com.nttdata.tdpcrud.models.dao.CustomerDao"
+},{
+  "_id": {
+    "$oid": "62f877642c98b41c2cf5cc20"
+  },
+  "name": "Ebert",
+  "surname": "Gonzales",
+  "direction": "Calle 2, Covicorti, Trujillo",
+  "createdAt": {
+    "$date": "2022-08-14T04:17:40.178Z"
+  },
+  "updatedAt": {
+    "$date": "2022-08-14T04:17:40.178Z"
+  },
+  "_class": "com.nttdata.tdpcrud.models.dao.CustomerDao"
+},{
+  "_id": {
+    "$oid": "62f87a3cdf3a0365128c11c4"
+  },
+  "name": "Bill",
+  "surname": "Gates",
+  "direction": "Calle 1 , Covicorti, EEEUU",
+  "createdAt": {
+    "$date": "2022-08-14T04:29:48.962Z"
+  },
+  "updatedAt": {
+    "$date": "2022-08-28T23:54:52.821Z"
+  },
+  "_class": "com.devcreativa.customers.models.entities.Customer"
+}]

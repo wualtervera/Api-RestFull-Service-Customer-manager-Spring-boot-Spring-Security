@@ -78,8 +78,6 @@ public class CustomerServiceImpl implements CustomerService {
         if (null == customerDTODB)
             return null;
 
-
-
         fields.forEach((key, value) -> {
             Field field = ReflectionUtils.findField(CustomerDTO.class, (String) key);
             field.setAccessible(true);

@@ -1,0 +1,72 @@
+[{
+  "_id": {
+    "$oid": "62edb49ae357802ffc119174"
+  },
+  "name": "Juan",
+  "username": "juan",
+  "password": "$2a$10$9cZ0UfErv6R0LLAho96T5envvQ6NZIk7zKR/tcXMS3HIn3tZsf7De",
+  "roles": [
+    "ROLE_ADMIN",
+    "ROLE_MODERATOR",
+    "ROLE_USER"
+  ],
+  "createdAt": {
+    "$date": "2022-08-20T21:43:06.792Z"
+  },
+  "updatedAt": {
+    "$date": "2022-08-20T21:43:06.792Z"
+  },
+  "_class": "com.nttdata.tdpcrud.models.dao.UserDao"
+},{
+  "_id": {
+    "$oid": "62edbbce740ff92e7fcdd4ee"
+  },
+  "name": "Diego",
+  "username": "diego",
+  "password": "$2a$10$TP2blUDYpOwjnf9/N.zJg.GJkJoB/W2cspz/zo9Qne9PqecBxLXUa",
+  "roles": [
+    "ROLE_MODERATOR",
+    "ROLE_USER"
+  ],
+  "createdAt": {
+    "$date": "2022-08-20T21:43:55.662Z"
+  },
+  "updatedAt": {
+    "$date": "2022-08-20T21:43:55.662Z"
+  },
+  "_class": "com.nttdata.tdpcrud.models.dao.UserDao"
+},{
+  "_id": {
+    "$oid": "62edbc5e740ff92e7fcdd4ef"
+  },
+  "name": "Carlos",
+  "username": "carlos",
+  "password": "$2a$10$b95ozSP3Fq59BlDV75WEoukuc/k6B8uzpm6FbH7Qi3Lelbadhtlke",
+  "roles": [
+    "ROLE_USER"
+  ],
+  "createdAt": {
+    "$date": "2022-08-20T21:44:13.328Z"
+  },
+  "updatedAt": {
+    "$date": "2022-08-20T21:44:13.328Z"
+  },
+  "_class": "com.nttdata.tdpcrud.models.dao.UserDao"
+},{
+  "_id": {
+    "$oid": "62edbdbee4444c324091d6e8"
+  },
+  "name": "Martin Vizcarra",
+  "username": "martin",
+  "password": "$2a$10$BPN3VBgN1r8qUkWZNV5n0.JxUDYPthzj/aerQh8lnXIIWg7ybzbAi",
+  "roles": [
+    "ROLE_USER"
+  ],
+  "createdAt": {
+    "$date": "2022-08-20T21:44:32.726Z"
+  },
+  "updatedAt": {
+    "$date": "2022-08-28T22:44:12.914Z"
+  },
+  "_class": "com.devcreativa.customers.models.entities.User"
+}]
