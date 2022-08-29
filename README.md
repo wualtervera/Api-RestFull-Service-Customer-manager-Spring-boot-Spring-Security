@@ -3,25 +3,27 @@
 ### Instalation
 
 * Create data base MongoDB
-* Upload data [customer.json](https://github.com/wualtervera/Customer-Manager-Spring-boot-MVC-Spring-Security/blob/main/docs/customers.json
+* Upload data [customer.json](.../blob/main/docs/customers.json
   )
-* Upload data [users.json](https://github.com/wualtervera/Customer-Manager-Spring-boot-MVC-Spring-Security/blob/main/docs/users.json
-    )
+* Upload data [users.json](.../blob/main/docs/users.json)
 * User access test ```[username: juan, password:123],[username: diego, password:123],[username: juan, password:123],[username: martin, password:1234] ```
-* Update database name in [Application.yml](https://github.com/wualtervera/Customer-Manager-Spring-boot-MVC-Spring-Security/blob/main/src/main/resources/application.yaml)
+* Update database name in [Application.yml](.../blob/main/src/main/resources/application.yaml)
 * ``` git clone https://github.com/wualtervera/Customer-Manager-Spring-boot-MVC-Spring-Security.git```
 * run ```mvn install```
 
 Data de prueba
-* Impor in postman [customer-manager.postman_collection](https://github.com/wualtervera/Customer-Manager-Spring-boot-MVC-Spring-Security/blob/main/docs/customer-manager.postman_collection.json
+* Impor in postman [customer-manager.postman_collection](.../blob/main/docs/customer-manager.postman_collection.json
   )
+
+Swagger URL
+* ```http://localhost:8080/swagger-ui/index.html```
 
 ### Proyect content
 
 **RestFull Service: Customer managment.** 
 
 Content App:
-* Modelos
+* Models
 * Repositories
 * Services
 * Controllers
@@ -31,18 +33,19 @@ Content App:
 * Swagger Documentation
 * Good coding practices
 
-Progracmacion
-* POO
-* Clases
-* Interfaces
-* Genericos
-* Map
-* Listas
-* Colleciones
+Applied Programming
+* OOP
+* class
+* interfaces
+* Generics
+* Maps
+* Lists
+* Collections
 * Streams
-* Reflections
-* Encriptacion
-* etc
+* reflections
+* encryption
+* States
+* ... etc
 
 ### Tecnologis content
 
@@ -58,18 +61,18 @@ Progracmacion
 
 * DB Mongo Db
 
-![Response /user](https://github.com/wualtervera/Customer-Manager-Spring-boot-MVC-Spring-Security/blob/main/docs/db-customer-manager.png?raw=true)
+![Response /user](.../blob/main/docs/db-customer-manager.png?raw=true)
 
 
 * EndPoint /user
 
-![Response /user](https://github.com/wualtervera/Customer-Manager-Spring-boot-MVC-Spring-Security/blob/main/docs/response-endpoint-users-ppi-rest-full-2.png?raw=true)
+![Response /user](.../blob/main/docs/response-endpoint-users-ppi-rest-full-2.png?raw=true)
 
 * Swagger Documentation
 
-![Response /user](https://github.com/wualtervera/Customer-Manager-Spring-boot-MVC-Spring-Security/blob/main/docs/swagger-v3-api-docs.png?raw=true)
+![Response /user](.../blob/main/docs/swagger-v3-api-docs.png?raw=true)
 
 
 * Unit test - Mokito, Spring boot test
 
-![Response /user](https://github.com/wualtervera/Customer-Manager-Spring-boot-MVC-Spring-Security/blob/main/docs/unit-test-customer-controller.png?raw=true)
+![Response /user](.../blob/main/docs/unit-test-customer-controller.png?raw=true)
