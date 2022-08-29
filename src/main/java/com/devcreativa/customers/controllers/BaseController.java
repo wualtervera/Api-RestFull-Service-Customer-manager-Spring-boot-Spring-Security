@@ -1,0 +1,25 @@
+package com.devcreativa.customers.controllers;
+
+import java.util.List;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+
+
+/**
+ * {@summary <p>Base Controller api.<p/>}
+ *
+ * @author wualtervera
+ */
+public interface BaseController<E> {
+
+  ResponseEntity<List<E>> getAll();
+
+  ResponseEntity<E> getOne(@PathVariable String id) throws Exception;
+
+  ResponseEntity<E> save(@RequestBody E e);
+
+  ResponseEntity<E> update(@PathVariable String id, @RequestBody E e) throws Exception;
+
+  ResponseEntity<?> delete(@PathVariable String id) throws Exception;
+}
