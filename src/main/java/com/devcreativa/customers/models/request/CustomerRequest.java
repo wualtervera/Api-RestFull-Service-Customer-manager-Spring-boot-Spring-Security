@@ -1,4 +1,4 @@
-package com.devcreativa.customers.models.dtos;
+package com.devcreativa.customers.models.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,11 +15,9 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class CustomerDTO {
+public class CustomerRequest {
   private String id;
   private String name;
   private String surname;
   private String direction;
-  private Date createdAt;
-  private Date updatedAt;
 }

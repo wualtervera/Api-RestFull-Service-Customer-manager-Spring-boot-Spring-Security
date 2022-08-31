@@ -1,7 +1,7 @@
 package com.devcreativa.customers.controllers;
 
-import com.devcreativa.customers.models.dtos.CustomerDTO;
-import com.devcreativa.customers.models.dtos.UserDTO;
+import com.devcreativa.customers.models.request.CustomerRequest;
+import com.devcreativa.customers.models.response.CustomerResponse;
 import com.devcreativa.customers.services.CustomerService;
 import com.devcreativa.customers.utils.Constants;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,74 +27,75 @@ import static com.devcreativa.customers.utils.Utils.responseError;
 @SecurityRequirement(name = "carlos")
 @RestController
 @RequestMapping(path = "api/v1/customer")
-public class CustomerController implements BaseController<CustomerDTO> {
+public class CustomerController implements BaseController<CustomerRequest, CustomerResponse> {
 
     @Autowired
     private CustomerService customerService;
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     @Override
-    public ResponseEntity<List<CustomerDTO>> getAll() {
+    public ResponseEntity<List<CustomerResponse>> getAll() {
 
-        List<CustomerDTO> customerDTOS = this.customerService.findAll();
+        List<CustomerResponse> customerResponses = this.customerService.findAll();
 
-        if (customerDTOS.isEmpty())
+        if (customerResponses.isEmpty())
             return responseEntity(responseError(Constants.RESOURSE_NOT_FOUND), HttpStatus.NO_CONTENT);
 
-        return ResponseEntity.ok(customerService.findAll());
+        return ResponseEntity.ok(customerResponses);
     }
 
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Override
-    public ResponseEntity<CustomerDTO> getOne(String id) throws Exception {
-        CustomerDTO customers = this.customerService.findById(id);
+    public ResponseEntity<CustomerResponse> getOne(String id) throws Exception {
 
-        if (null == customers)
+        CustomerResponse customersResponse = this.customerService.findById(id);
+
+        if (null == customersResponse)
             return responseEntity(responseError(Constants.RESOURSE_ID_NOT_FOUND), HttpStatus.NOT_FOUND);
 
-        return ResponseEntity.status(HttpStatus.OK).body(customers);
+        return ResponseEntity.status(HttpStatus.OK).body(customersResponse);
     }
 
     @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     @Override
-    public ResponseEntity<CustomerDTO> save(CustomerDTO customerDTO) {
+    public ResponseEntity<CustomerResponse> save(CustomerRequest customerRequest) {
 
-        CustomerDTO customerDTODB = this.customerService.save(customerDTO);
+        CustomerResponse customerResponse  = this.customerService.save(customerRequest);
 
-        if (null == customerDTODB)
+        if (null == customerResponse)
             return ResponseEntity.internalServerError().build();
 
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(customerDTODB);
+            .body(customerResponse);
     }
 
     @Operation(summary = "Update all properties") //swagger
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Override
-    public ResponseEntity<CustomerDTO> update(String id, CustomerDTO customerDTO) {
-        CustomerDTO customerDTODB = this.customerService.update(customerDTO, id);
+    public ResponseEntity<CustomerResponse> update(String id, CustomerRequest customerRequest) {
+        CustomerResponse customerResponse = this.customerService.update(customerRequest, id);
 
-        if (null == customerDTODB)
+        if (null == customerResponse)
             return responseEntity(responseError(Constants.RESOURSE_ID_NOT_FOUND), HttpStatus.NOT_FOUND);
 
-        return ResponseEntity.ok(customerDTODB);
+        return ResponseEntity.ok(customerResponse);
     }
 
     @Operation(summary = "Update partial properties(name, surname, etc)") //swagger
     @PatchMapping(value = "/{id}")
-    public ResponseEntity<CustomerDTO> updatePartial(@PathVariable String id, @RequestBody Map<Object, Object> fields) {
+    public ResponseEntity<CustomerResponse> updatePartial(@PathVariable String id, @RequestBody Map<Object, Object> fields) {
 
         if (!customerService.existsById(id))
             return responseEntity(responseError(Constants.RESOURSE_ID_NOT_FOUND), HttpStatus.NOT_FOUND);
 
-        CustomerDTO customerDTODB = this.customerService.updatePartial(id, fields);
-        return ResponseEntity.ok(customerDTODB);
+        CustomerResponse customerResponse = this.customerService.updatePartial(id, fields);
+        return ResponseEntity.ok(customerResponse);
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Override
-    public ResponseEntity<CustomerDTO> delete(String id) {
+    public ResponseEntity<CustomerResponse> delete(String id) {
         boolean deleted = this.customerService.delete(id);
 
         if (!deleted)

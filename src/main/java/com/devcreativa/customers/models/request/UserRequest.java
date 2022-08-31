@@ -1,4 +1,4 @@
-package com.devcreativa.customers.models.dtos;
+package com.devcreativa.customers.models.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * {@summary UserDTO dtos.}
+ * {@summary UserRequest dtos.}
  *
  * @author wualtervera
  */
@@ -18,13 +18,10 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDTO {
+public class UserRequest {
   private String id;
   private String name;
   private String username;
   private String password;
   private List<String> roles;
-
-  private Date createdAt;
-  private Date updatedAt;
 }

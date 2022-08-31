@@ -1,6 +1,8 @@
 package com.devcreativa.customers.controllers;
 
-import com.devcreativa.customers.models.dtos.CustomerDTO;
+import com.devcreativa.customers.models.entities.Customer;
+import com.devcreativa.customers.models.request.CustomerRequest;
+import com.devcreativa.customers.models.response.CustomerResponse;
 import com.devcreativa.customers.services.impl.CustomerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,22 +27,27 @@ class CustomerControllerTest {
     @InjectMocks
     private CustomerController controller;
 
-    private CustomerDTO customerDTO;
+    private CustomerRequest customerRequest;
+    private CustomerResponse customerResponse;
+    private Customer customer;
 
     @BeforeEach
     void setUp() {
-        this.customerDTO = new CustomerDTO("61c147ef9a746217024a9e5a", "Will", "V", "Trujillo", new Date(), new Date());
+        this.customer = new Customer("61c147ef9a746217024a9e5a", "Will", "V", "Trujillo", new Date(), new Date());
+        this.customerResponse = new CustomerResponse("61c147ef9a746217024a9e5a", "Will", "V", "Trujillo");
+        this.customerRequest = new CustomerRequest("61c147ef9a746217024a9e5a", "Will", "V", "Trujillo");
+
     }
 
     @Test
     void getAll() {
-      List<CustomerDTO> list = new ArrayList<>();
+      List<CustomerResponse> list = new ArrayList<>();
 
-      list.add(this.customerDTO);
-      list.add(this.customerDTO);
+      list.add(this.customerResponse);
+      list.add(this.customerResponse);
 
       when(this.service.findAll()).thenReturn(list);
-      ResponseEntity<List<CustomerDTO>> res = this.controller.getAll();
+      ResponseEntity<List<CustomerResponse>> res = this.controller.getAll();
 
       assertEquals(HttpStatus.OK, res.getStatusCode());
 
@@ -49,10 +56,10 @@ class CustomerControllerTest {
 
     @Test
     void getAllListEmpty() {
-        List<CustomerDTO> list = new ArrayList<>();
+        List<CustomerResponse> list = new ArrayList<>();
 
         when(this.service.findAll()).thenReturn(list);
-        ResponseEntity<List<CustomerDTO>> res = this.controller.getAll();
+        ResponseEntity<List<CustomerResponse>> res = this.controller.getAll();
 
         assertEquals(HttpStatus.NO_CONTENT, res.getStatusCode());
     }
@@ -60,44 +67,40 @@ class CustomerControllerTest {
     @Test
     void getOne() throws Exception {
 
-        when(this.service.findById(this.customerDTO.getId())).thenReturn(this.customerDTO);
+        when(this.service.findById(anyString())).thenReturn(this.customerResponse);
 
-        ResponseEntity<CustomerDTO> res = this.controller.getOne(this.customerDTO.getId());
+        ResponseEntity<CustomerResponse> res = this.controller.getOne(this.customerRequest.getId());
 
         assertEquals(HttpStatus.OK, res.getStatusCode());
-        assertEquals(this.customerDTO, res.getBody());
+        assertEquals(this.customerResponse.getId(), res.getBody().getId());
 
-        ResponseEntity<CustomerDTO> res2 = this.controller.getOne("5"); //NO EXIST ID
-        System.out.println("res = " + res2); //OK
-        assertEquals(HttpStatus.NOT_FOUND, res2.getStatusCode());
-
-        verify(service, times(1)).findById(this.customerDTO.getId());
+        verify(service, times(1)).findById(this.customerRequest.getId());
     }
     @Test
     void getOneIdNotFound() throws Exception {
 
-        when(this.service.findById(this.customerDTO.getId())).thenReturn(null);
+        when(this.service.findById(anyString())).thenReturn(null);
 
-        ResponseEntity<CustomerDTO> res = this.controller.getOne(this.customerDTO.getId());
+        ResponseEntity<CustomerResponse> res = this.controller.getOne(this.customerRequest.getId());
 
         assertEquals(HttpStatus.NOT_FOUND, res.getStatusCode());
     }
 
     @Test
     void save() {
-        when(this.service.save(this.customerDTO)).thenReturn(this.customerDTO);
+        when(this.service.save(any(CustomerRequest.class))).thenReturn(this.customerResponse);
 
-        ResponseEntity<CustomerDTO> res = this.controller.save(this.customerDTO);
+        ResponseEntity<CustomerResponse> res = this.controller.save(this.customerRequest);
 
         assertEquals(HttpStatus.CREATED, res.getStatusCode());
 
-        assertEquals(this.customerDTO, res.getBody());
+        assertEquals(this.customerResponse, res.getBody());
     }
     @Test
     void saveResponseNull() {
-        when(this.service.save(this.customerDTO)).thenReturn(null);
+        when(this.service.save(any(CustomerRequest.class))).thenReturn(null);
 
-        ResponseEntity<CustomerDTO> res = this.controller.save(this.customerDTO);
+        ResponseEntity<CustomerResponse> res = this.controller.save(this.customerRequest);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, res.getStatusCode());
     }
@@ -105,26 +108,26 @@ class CustomerControllerTest {
     @Test
     void update() {
 
-        this.customerDTO.setName("Will 3");
+        when(this.service.existsById(anyString())).thenReturn(true);
 
-        when(this.service.existsById(this.customerDTO.getId()))
-            .thenReturn(true);
-        when(this.service.update(this.customerDTO, this.customerDTO.getId()))
-            .thenReturn(this.customerDTO);
+        this.customerResponse.setName("Will 3");
+        when(this.service.update(any(CustomerRequest.class), anyString()))
+            .thenReturn(this.customerResponse);
 
-        ResponseEntity<CustomerDTO> res = this.controller.update(this.customerDTO.getId(), this.customerDTO);
+        ResponseEntity<CustomerResponse> res = this.controller
+            .update(this.customerRequest.getId(), this.customerRequest);
 
         assertEquals(HttpStatus.OK, res.getStatusCode());
-        assertEquals(this.customerDTO.getName(), res.getBody().getName());
+        assertEquals(this.customerResponse.getName(), res.getBody().getName());
     }
 
     @Test
     void updateIdNotFound() {
 
-        when(this.service.update(this.customerDTO, this.customerDTO.getId()))
+        when(this.service.update(any(CustomerRequest.class), anyString()))
             .thenReturn(null);
 
-        ResponseEntity<CustomerDTO> res = this.controller.update(this.customerDTO.getId(), this.customerDTO);
+        ResponseEntity<CustomerResponse> res = this.controller.update(this.customerRequest.getId(), this.customerRequest);
 
         assertEquals(HttpStatus.NOT_FOUND, res.getStatusCode());
     }
@@ -133,22 +136,17 @@ class CustomerControllerTest {
 
     @Test
     void updatePartial() {
-
-        this.customerDTO.setName("Will 3");
-
         Map<Object, Object> fields = new HashMap<>();
         fields.put("name", "Will 2");
 
+        when(this.service.existsById(anyString())).thenReturn(true);
+        this.customerResponse.setName("Will 3");
+        when(this.service.updatePartial(anyString(), anyMap())).thenReturn(this.customerResponse);
 
-        when(this.service.existsById(this.customerDTO.getId()))
-            .thenReturn(true);
-        when(this.service.updatePartial(this.customerDTO.getId(), fields))
-            .thenReturn(this.customerDTO);
-
-        ResponseEntity<CustomerDTO> res = this.controller.updatePartial(this.customerDTO.getId(), fields);
+        ResponseEntity<CustomerResponse> res = this.controller.updatePartial(this.customerRequest.getId(), fields);
 
         assertEquals(HttpStatus.OK, res.getStatusCode());
-        assertEquals(this.customerDTO.getName(), res.getBody().getName());
+        assertEquals(this.customerResponse.getName(), res.getBody().getName());
     }
 
     @Test
@@ -156,31 +154,31 @@ class CustomerControllerTest {
         Map<Object, Object> fields = new HashMap<>();
         fields.put("name", "Will 2");
 
-        when(this.service.update(this.customerDTO, this.customerDTO.getId()))
+        when(this.service.update(this.customerRequest, this.customerRequest.getId()))
             .thenReturn(null);
 
-        ResponseEntity<CustomerDTO> res = this.controller.updatePartial(this.customerDTO.getId(), fields);
+        ResponseEntity<CustomerResponse> res = this.controller.updatePartial(this.customerRequest.getId(), fields);
 
         assertEquals(HttpStatus.NOT_FOUND, res.getStatusCode());
     }
 
     @Test
     void delete() {
-        when(this.service.delete(this.customerDTO.getId())).thenReturn(true);
+        when(this.service.delete(this.customerRequest.getId())).thenReturn(true);
 
-        ResponseEntity<?> res = this.controller.delete(this.customerDTO.getId());
+        ResponseEntity<?> res = this.controller.delete(this.customerRequest.getId());
 
         assertEquals(HttpStatus.NO_CONTENT, res.getStatusCode());
     }
     @Test
     void deleteIdNotFound() {
 
-        when(this.service.delete(this.customerDTO.getId())).thenReturn(false);
+        when(this.service.delete(this.customerRequest.getId())).thenReturn(false);
 
-        ResponseEntity<?> res = this.controller.delete(this.customerDTO.getId());
+        ResponseEntity<?> res = this.controller.delete(this.customerRequest.getId());
 
         assertEquals(HttpStatus.NOT_FOUND, res.getStatusCode());
 
-        verify(service, times(1)).delete(this.customerDTO.getId());
+        verify(service, times(1)).delete(this.customerRequest.getId());
     }
 }

@@ -1,6 +1,7 @@
 package com.devcreativa.customers.controllers;
 
-import com.devcreativa.customers.models.dtos.UserDTO;
+import com.devcreativa.customers.models.request.UserRequest;
+import com.devcreativa.customers.models.response.UserResponse;
 import com.devcreativa.customers.services.UserService;
 import com.devcreativa.customers.utils.Constants;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,17 +22,17 @@ import static com.devcreativa.customers.utils.Utils.responseError;
 @SecurityRequirement(name = "carlos")
 @RestController
 @RequestMapping("")
-public class UserController implements BaseController<UserDTO> {
+public class UserController implements BaseController<UserRequest,UserResponse> {
 
     @Autowired
     private UserService userService;
 
     @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
     @Override
-    public ResponseEntity<List<UserDTO>> getAll() {
+    public ResponseEntity<List<UserResponse>> getAll() {
 
-        List<UserDTO> userDTOS = this.userService.findAll();
-        if (userDTOS.isEmpty())
+        List<UserResponse> userRequests = this.userService.findAll();
+        if (userRequests.isEmpty())
             return responseEntity(responseError(Constants.RESOURSE_NOT_FOUND), HttpStatus.NO_CONTENT);
 
         return ResponseEntity.ok(this.userService.findAll());
@@ -39,49 +40,50 @@ public class UserController implements BaseController<UserDTO> {
 
     @GetMapping(value = "/users/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Override
-    public ResponseEntity<UserDTO> getOne(@PathVariable String id) throws Exception {
+    public ResponseEntity<UserResponse> getOne(@PathVariable String id) throws Exception {
 
-        UserDTO userDTO = this.userService.findById(id);
-        if (null == userDTO)
+        UserResponse userRequest = this.userService.findById(id);
+        if (null == userRequest)
             return responseEntity(responseError(Constants.RESOURSE_ID_NOT_FOUND), HttpStatus.NOT_FOUND);
 
-        return ResponseEntity.status(HttpStatus.OK).body(userDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(userRequest);
     }
 
     @PostMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
     @Override
-    public ResponseEntity<UserDTO> save(@RequestBody UserDTO userDTO) {
-        UserDTO userDTODB = this.userService.save(userDTO);
+    public ResponseEntity<UserResponse> save(@RequestBody UserRequest userRequest) {
 
-        if (null == userDTODB)
+        UserResponse userResponse = this.userService.save(userRequest);
+
+        if (null == userResponse)
             return ResponseEntity.internalServerError().build();
 
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(this.userService.save(userDTODB));
+            .body(userResponse);
     }
 
     @Operation(summary = "Update all properties") //swagger
     @PutMapping(value = "/users/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Override
-    public ResponseEntity<UserDTO> update(@PathVariable String id, @RequestBody UserDTO userDTO) {
+    public ResponseEntity<UserResponse> update(@PathVariable String id, @RequestBody UserRequest userRequest) {
 
-        UserDTO userDTODB = this.userService.update(userDTO, id);
+        UserResponse userResponse = this.userService.update(userRequest, id);
 
-        if (null == userDTODB)
+        if (null == userResponse)
             return responseEntity(responseError(Constants.RESOURSE_ID_NOT_FOUND), HttpStatus.NOT_FOUND);
 
-        return ResponseEntity.ok(userDTODB);
+        return ResponseEntity.ok(userResponse);
     }
 
     @Operation(summary = "Update partial properties(passwor, name, etc)") //swagger
     @PatchMapping(value = "/users/{id}")
-    public ResponseEntity<UserDTO> updatePartial(@PathVariable String id, @RequestBody Map<Object, Object> fields) {
+    public ResponseEntity<UserResponse> updatePartial(@PathVariable String id, @RequestBody Map<Object, Object> fields) {
 
         if (!userService.existsById(id))
             return responseEntity(responseError(Constants.RESOURSE_ID_NOT_FOUND), HttpStatus.NOT_FOUND);
 
-        UserDTO userDTODB = this.userService.updatePartial(id, fields);
-        return ResponseEntity.ok(userDTODB);
+        UserResponse userResponse = this.userService.updatePartial(id, fields);
+        return ResponseEntity.ok(userResponse);
     }
 
     @DeleteMapping(value = "/users/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -98,15 +100,15 @@ public class UserController implements BaseController<UserDTO> {
     //add access
     @Operation(summary = "Grant admin permissions") //swagger
     @PostMapping(value = "/admin", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDTO> addAdmin(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<UserResponse> addAdmin(@RequestBody UserRequest userRequest) {
 
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(userService.saveAdmin(userDTO));
+            .body(userService.saveAdmin(userRequest));
     }
 
     @Operation(summary = "Grant moderator permissions") //swagger
     @PutMapping(value = "/moderator/{id_user}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDTO> addAccessModeator(@PathVariable String idUser) {
+    public ResponseEntity<UserResponse> addAccessModeator(@PathVariable String idUser) {
 
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(userService.accessModerator(idUser));
@@ -114,7 +116,7 @@ public class UserController implements BaseController<UserDTO> {
 
     @Operation(summary = "Grant user permissions") //swagger
     @PutMapping(value = "/default/{id_user}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDTO> addAccessUser(@PathVariable String idUser) {
+    public ResponseEntity<UserResponse> addAccessUser(@PathVariable String idUser) {
 
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(userService.accessUser(idUser));

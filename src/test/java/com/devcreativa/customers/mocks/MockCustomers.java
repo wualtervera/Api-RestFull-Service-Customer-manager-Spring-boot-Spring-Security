@@ -1,28 +1,24 @@
 package com.devcreativa.customers.mocks;
 
+import com.devcreativa.customers.models.request.CustomerRequest;
 import com.devcreativa.customers.models.entities.Customer;
-import com.devcreativa.customers.models.dtos.CustomerDTO;
 
 public class MockCustomers {
-    public static CustomerDTO toCustomer(Customer customer) {
-        CustomerDTO c = new CustomerDTO();
+    public static CustomerRequest toCustomer(Customer customer) {
+        CustomerRequest c = new CustomerRequest();
         c.setId(customer.getId());
         c.setName(customer.getName());
         c.setSurname(customer.getSurname());
         c.setDirection(customer.getDirection());
-        c.setCreatedAt(customer.getCreatedAt());
-        c.setUpdatedAt(customer.getUpdatedAt());
         return c;
     }
 
-    public static Customer toCustomerDao(CustomerDTO customerDTO) {
+    public static Customer toCustomerDao(CustomerRequest customerRequest) {
         Customer cd = new Customer();
-        cd.setId(customerDTO.getId());
-        cd.setName(customerDTO.getName());
-        cd.setSurname(customerDTO.getSurname());
-        cd.setDirection(customerDTO.getDirection());
-        cd.setCreatedAt(customerDTO.getCreatedAt());
-        cd.setUpdatedAt(customerDTO.getUpdatedAt());
+        cd.setId(customerRequest.getId());
+        cd.setName(customerRequest.getName());
+        cd.setSurname(customerRequest.getSurname());
+        cd.setDirection(customerRequest.getDirection());
         return cd;
     }
 }

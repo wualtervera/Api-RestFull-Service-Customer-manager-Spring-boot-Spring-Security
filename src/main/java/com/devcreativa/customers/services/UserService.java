@@ -1,12 +1,11 @@
 package com.devcreativa.customers.services;
 
-import com.devcreativa.customers.models.dtos.UserDTO;
+import com.devcreativa.customers.models.request.UserRequest;
+import com.devcreativa.customers.models.response.UserResponse;
 
-import java.util.Map;
+public interface UserService extends BaseService<UserRequest,UserResponse>{
 
-public interface UserService extends BaseService<UserDTO>{
-
-    UserDTO saveAdmin(UserDTO userDTO);
-    UserDTO accessUser(String id);
-    UserDTO accessModerator(String id);
+    UserResponse saveAdmin(UserRequest userRequest);
+    UserResponse accessUser(String id);
+    UserResponse accessModerator(String id);
 }

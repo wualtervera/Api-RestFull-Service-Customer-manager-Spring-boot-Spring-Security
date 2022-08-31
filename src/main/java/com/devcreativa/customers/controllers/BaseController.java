@@ -11,15 +11,15 @@ import org.springframework.web.bind.annotation.RequestBody;
  *
  * @author wualtervera
  */
-public interface BaseController<E> {
+public interface BaseController<E, R> {
 
-  ResponseEntity<List<E>> getAll();
+  ResponseEntity<List<R>> getAll();
 
-  ResponseEntity<E> getOne(@PathVariable String id) throws Exception;
+  ResponseEntity<R> getOne(@PathVariable String id) throws Exception;
 
-  ResponseEntity<E> save(@RequestBody E e);
+  ResponseEntity<R> save(@RequestBody E e);
 
-  ResponseEntity<E> update(@PathVariable String id, @RequestBody E e) throws Exception;
+  ResponseEntity<R> update(@PathVariable String id, @RequestBody E e) throws Exception;
 
   ResponseEntity<?> delete(@PathVariable String id) throws Exception;
 }

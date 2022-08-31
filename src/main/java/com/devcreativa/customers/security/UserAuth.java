@@ -5,7 +5,7 @@ import lombok.*;
 import java.util.List;
 
 /**
- * {@summary UserDTO dtos.}
+ * {@summary UserRequest dtos.}
  *
  * @author wualtervera
  */

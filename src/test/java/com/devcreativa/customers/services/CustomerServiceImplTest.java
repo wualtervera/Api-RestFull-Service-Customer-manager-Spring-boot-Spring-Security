@@ -1,21 +1,21 @@
 package com.devcreativa.customers.services;
 
 import com.devcreativa.customers.models.entities.Customer;
-import com.devcreativa.customers.models.dtos.CustomerDTO;
+import com.devcreativa.customers.models.request.CustomerRequest;
+import com.devcreativa.customers.models.response.CustomerResponse;
 import com.devcreativa.customers.repositories.CustomerRepository;
 import com.devcreativa.customers.services.impl.CustomerServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.modelmapper.ModelMapper;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.*;
 
-import static com.devcreativa.customers.mocks.MockCustomers.toCustomerDao;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -25,72 +25,78 @@ class CustomerServiceImplTest {
 
     @Mock
     private CustomerRepository repository;
+    @Mock
+    private ModelMapper modelMapper;
 
     @InjectMocks
     private CustomerServiceImpl service;
 
-    private CustomerDTO customerDTO = null;
+    private CustomerRequest customerRequest = null;
+    private CustomerResponse customerResponse = null;
     private Customer customer = null;
 
     @BeforeEach
     void setUp() {
         customer = new Customer("61c147ef9a746217024a9e52", "Bill", "VG", "Trujillo 1", new Date(), new Date());
-        customerDTO = new CustomerDTO("61c147ef9a746217024a9e52", "Bill", "VG", "Trujillo 1", new Date(), new Date());
-
+        customerRequest = new CustomerRequest("61c147ef9a746217024a9e52", "Bill", "VG", "Trujillo 1");
+        customerResponse = new CustomerResponse("61c147ef9a746217024a9e52", "Bill", "VG", "Trujillo 1");
     }
 
     @Test
-    @Order(1)
     void findAll() {
         List<Customer> list = new ArrayList<>();
-
         list.add(customer);
 
         when(this.repository.findAll()).thenReturn(list);
+        when(modelMapper.map(any(), any())).thenReturn(customerResponse);
 
         int size = this.service.findAll().size();
 
         assertEquals(1, size);
-
         verify(repository, times(1)).findAll();
     }
 
     @Test
     void findById() {
+        when(this.repository.findById(anyString())).thenReturn(Optional.ofNullable(customer));
+        when(modelMapper.map(any(), any())).thenReturn(customerResponse);
 
-        when(this.repository.findById(customer.getId())).thenReturn(Optional.of(customer));
+        CustomerResponse customerResponse = service.findById(customerRequest.getId());
 
-        CustomerDTO customerDTO = service.findById(customer.getId());
-        System.out.println("res = " + customerDTO.getId()); //respuesta
-
-        assertEquals(customer.getId(), customerDTO.getId());
-
+        assertEquals(customerRequest.getId(), customerResponse.getId());
         verify(repository, times(1)).findById(customer.getId());
+    }
+    @Test
+    void findByIdNotFound() {
+        when(this.repository.findById(anyString())).thenReturn(Optional.empty());
+
+        CustomerResponse customerResponse = service.findById(customer.getId());
+
+        assertNull(customerResponse);
     }
 
     @Test
     void save() {
 
-        when(this.repository.save(any(Customer.class))).thenReturn(toCustomerDao(customerDTO));
+        when(modelMapper.map(any(CustomerRequest.class), any())).thenReturn(customer);
+        when(this.repository.save(any(Customer.class))).thenReturn(customer);
+        when(modelMapper.map(any(Customer.class), any())).thenReturn(customerResponse);
+        CustomerResponse customerResponse = this.service.save(customerRequest);
 
-        CustomerDTO customerDTOResp = this.service.save(customerDTO);
-
-        assertNotNull(customerDTOResp);
+        assertNotNull(customerResponse);
     }
 
     @Test
     void update() {
+        when(modelMapper.map(any(), any())).thenReturn(customerResponse);
+        when(this.repository.findById(anyString())).thenReturn(Optional.of(customer));
 
-        when(this.repository.findById(anyString()))
-            .thenReturn(Optional.of(toCustomerDao(customerDTO)));
+        this.customer.setName("Will 3");
+        when(this.repository.save(any(Customer.class))).thenReturn(customer);
 
-        this.customerDTO.setName("Will 3");
-        when(this.repository.save(any(Customer.class)))
-            .thenReturn(toCustomerDao(customerDTO));
+        CustomerResponse customerResponses = this.service.update(customerRequest, customerRequest.getId());
 
-        CustomerDTO customerDTORes = this.service.update(customerDTO, customerDTO.getId());
-
-        assertEquals(customerDTORes.getName(), "Will 3");
+        assertEquals(customer.getName(), customerResponses.getName());
     }
 
     @Test
@@ -99,8 +105,8 @@ class CustomerServiceImplTest {
         when(this.repository.findById(anyString()))
             .thenReturn(Optional.empty());
 
-        CustomerDTO customerDTORes = this.service.update(customerDTO, customerDTO.getId());
-        assertNull(customerDTORes);
+        CustomerResponse customerResponses = this.service.update(customerRequest, customerRequest.getId());
+        assertNull(customerResponses);
     }
 
 
@@ -109,16 +115,16 @@ class CustomerServiceImplTest {
         Map<Object, Object> fields = new HashMap<>();
         fields.put("name", "Will 2");
 
-        when(this.repository.findById(anyString()))
-            .thenReturn(Optional.of(toCustomerDao(customerDTO)));
+        when(this.repository.findById(anyString())).thenReturn(Optional.ofNullable(customer));
 
-        this.customerDTO.setName("Will 3");
-        when(this.repository.save(any(Customer.class)))
-            .thenReturn(toCustomerDao(customerDTO));
+        this.customerResponse.setName("Will 2");
+        when(modelMapper.map(any(), any())).thenReturn(customerResponse);
 
-        CustomerDTO customerDTORes = this.service.updatePartial(customerDTO.getId(), fields);
+        when(this.repository.save(any(Customer.class))).thenReturn(customer);
 
-        assertEquals(customerDTORes.getName(), "Will 3");
+        CustomerResponse customerResp = this.service.updatePartial(customerRequest.getId(), fields);
+
+        assertEquals("Will 2", customerResp.getName());
     }
 
     @Test
@@ -129,8 +135,8 @@ class CustomerServiceImplTest {
         when(this.repository.findById(anyString()))
             .thenReturn(Optional.empty());
 
-        CustomerDTO customerDTORes = this.service.updatePartial(customerDTO.getId(), fields);
-        assertNull(customerDTORes);
+        CustomerResponse customerResponses = this.service.updatePartial(customerRequest.getId(), fields);
+        assertNull(customerResponses);
     }
 
     @Test
@@ -139,9 +145,9 @@ class CustomerServiceImplTest {
         when(this.repository.existsById(anyString()))
             .thenReturn(true);
 
-        doNothing().when(this.repository).deleteById(customerDTO.getId());
+        doNothing().when(this.repository).deleteById(customerRequest.getId());
 
-        boolean delete = service.delete(customerDTO.getId());
+        boolean delete = service.delete(customerRequest.getId());
 
         assertTrue(delete);
 
@@ -153,7 +159,7 @@ class CustomerServiceImplTest {
         when(this.repository.existsById(anyString()))
             .thenReturn(false);
 
-        boolean delete = service.delete(customerDTO.getId());
+        boolean delete = service.delete(customerRequest.getId());
 
         assertFalse(delete);
     }
@@ -163,7 +169,7 @@ class CustomerServiceImplTest {
 
         when(this.repository.existsById(anyString())).thenReturn(true);
 
-        boolean exist = this.service.existsById(customerDTO.getId());
+        boolean exist = this.service.existsById(customerRequest.getId());
 
         assertTrue(exist);
     }
